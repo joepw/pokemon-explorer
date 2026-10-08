@@ -17,5 +17,5 @@ export async function createCustomBerry(formData: FormData) {
     redirect(`/berries/new?error=${encodeURIComponent(result.error)}`);
   }
 
-  redirect(`/berries?q=${encodeURIComponent(result.berry.name)}`);
+  redirect(`/berries/${encodeURIComponent(result.berry.name)}`);
 }

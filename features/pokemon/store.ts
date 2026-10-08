@@ -1,5 +1,4 @@
 import { promises as fs } from "fs";
-import path from "path";
 import { z } from "zod";
 
 export const customPokemonSchema = z.object({
@@ -42,7 +41,10 @@ export type CustomPokemon = z.output<typeof customPokemonSchema> & {
   createdAt: string;
 };
 
-const DATA_FILE = "/tmp/custom-pokemon.json";
+const IS_VERCEL = process.env.VERCEL === "1";
+const DATA_FILE = IS_VERCEL
+  ? "/tmp/custom-pokemon.json"
+  : "data/custom-pokemon.json";
 
 export async function readCustomPokemon(): Promise<CustomPokemon[]> {
   try {
@@ -77,4 +79,20 @@ export async function addCustomPokemon(
 
   await fs.writeFile(DATA_FILE, JSON.stringify([...existing, pokemon], null, 2));
   return { ok: true, pokemon };
+}
+
+export async function deleteCustomPokemon(name: string): Promise<{
+  ok: true;
+  deleted: string;
+} | { ok: false; error: string }> {
+  const existing = await readCustomPokemon();
+  const index = existing.findIndex(
+    (p) => p.name.toLowerCase() === name.toLowerCase()
+  );
+  if (index === -1) {
+    return { ok: false, error: `No custom Pokémon named "${name}" exists` };
+  }
+  const next = existing.filter((p) => p.name.toLowerCase() !== name.toLowerCase());
+  await fs.writeFile(DATA_FILE, JSON.stringify(next, null, 2));
+  return { ok: true, deleted: existing[index].name };
 }

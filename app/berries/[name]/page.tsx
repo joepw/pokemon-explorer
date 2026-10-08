@@ -5,6 +5,7 @@ import {
   getBerryDetail,
   getBerrySpriteUrl,
 } from "@/features/berries/api";
+import { deleteCustomBerryAction } from "./actions";
 import { Sprite } from "@/shared/ui/Sprite";
 
 // dynamic: reads :name params
@@ -176,6 +177,21 @@ export default async function BerryDetailPage({
           </ul>
         </section>
       )}
+
+      <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <form
+          action={deleteCustomBerryAction}
+          className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-900/40 dark:bg-red-950/20"
+        >
+          <input type="hidden" name="name" value={view.name} />
+          <button
+            type="submit"
+            className="cursor-pointer rounded-md bg-red-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-500"
+          >
+            Delete custom berry
+          </button>
+        </form>
+      </div>
     </main>
   );
 }

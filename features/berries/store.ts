@@ -21,7 +21,10 @@ export type CustomBerry = z.output<typeof customBerrySchema> & {
   createdAt: string;
 };
 
-const DATA_FILE = "/tmp/custom-berries.json";
+const IS_VERCEL = process.env.VERCEL === "1";
+const DATA_FILE = IS_VERCEL
+  ? "/tmp/custom-berries.json"
+  : "data/custom-berries.json";
 
 export async function readCustomBerries(): Promise<CustomBerry[]> {
   try {
@@ -56,4 +59,22 @@ export async function addCustomBerry(
 
   await fs.writeFile(DATA_FILE, JSON.stringify([...existing, berry], null, 2));
   return { ok: true, berry };
+}
+
+export async function deleteCustomBerry(name: string): Promise<{
+  ok: true;
+  deleted: string;
+} | { ok: false; error: string }> {
+  const existing = await readCustomBerries();
+  const index = existing.findIndex(
+    (b) => b.name.toLowerCase() === name.toLowerCase()
+  );
+  if (index === -1) {
+    return { ok: false, error: `No custom berry named "${name}" exists` };
+  }
+  const next = existing.filter(
+    (b) => b.name.toLowerCase() !== name.toLowerCase()
+  );
+  await fs.writeFile(DATA_FILE, JSON.stringify(next, null, 2));
+  return { ok: true, deleted: existing[index].name };
 }

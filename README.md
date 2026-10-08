@@ -2,6 +2,8 @@
 
 A web app for exploring Pokémon and berry data from [PokéAPI](https://pokeapi.co) — browse, search, paginate, inspect details, and add your own custom entries.
 
+**Live demo:** https://pokemon-explorer-theta-pearl.vercel.app/
+
 ## Features
 
 **Pokémon Library** (`/pokemon`)

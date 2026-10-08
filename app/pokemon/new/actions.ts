@@ -17,5 +17,5 @@ export async function createCustomPokemon(formData: FormData) {
     redirect(`/pokemon/new?error=${encodeURIComponent(result.error)}`);
   }
 
-  redirect(`/pokemon?q=${encodeURIComponent(result.pokemon.name)}`);
+  redirect(`/pokemon/${encodeURIComponent(result.pokemon.name)}`);
 }

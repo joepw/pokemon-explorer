@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { readCustomPokemon } from "@/features/pokemon/store";
 import { getPokemonDetail } from "@/features/pokemon/api";
+import { deleteCustomPokemonAction } from "./actions";
 import { Sprite } from "@/shared/ui/Sprite";
 
 // dynamic: reads :name params
@@ -159,22 +160,20 @@ export default async function PokemonDetailPage({
         </div>
       </div>
 
-      <section className="mt-8">
-        <h2 className="text-lg font-semibold">Abilities</h2>
-        <ul className="mt-3 flex flex-wrap gap-2">
-          {view.abilities.map((ability) => (
-            <li
-              key={ability.name}
-              className="rounded-md border border-zinc-200 px-3 py-1.5 text-sm capitalize dark:border-zinc-700"
-            >
-              {ability.name}
-              {ability.hidden && (
-                <span className="ml-1 text-xs text-zinc-500">(hidden)</span>
-              )}
-            </li>
-          ))}
-        </ul>
-      </section>
+      <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <form
+          action={deleteCustomPokemonAction}
+          className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-900/40 dark:bg-red-950/20"
+        >
+          <input type="hidden" name="name" value={view.name} />
+          <button
+            type="submit"
+            className="cursor-pointer rounded-md bg-red-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-500"
+          >
+            Delete custom Pokémon
+          </button>
+        </form>
+      </div>
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold">Base stats</h2>

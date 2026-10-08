@@ -1,10 +1,9 @@
 import Link from "next/link";
+import { Suspense } from "react";
 
-import { readCustomPokemon } from "@/lib/custom-pokemon";
-import {
-  getAllPokemonNames,
-  getPokemonPage,
-} from "@/lib/pokeapi-pokemon";
+import { readCustomPokemon } from "@/features/pokemon/store";
+import { getAllPokemonNames, getPokemonPage } from "@/features/pokemon/api";
+import { PokemonSearchBox } from "@/features/pokemon/components/PokemonSearchBox";
 import type { ListItem } from "@/lib/pokeapi";
 
 export const instant = false;
@@ -67,25 +66,9 @@ export default async function PokemonPage({
         .
       </p>
 
-      <form method="get" className="mt-4 flex gap-2">
-        <input
-          name="q"
-          defaultValue={q}
-          placeholder="Search e.g. char"
-          className="flex-1 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700"
-        />
-        <button
-          type="submit"
-          className="rounded border border-zinc-300 px-4 py-2 dark:border-zinc-700"
-        >
-          Search
-        </button>
-        {isSearching && (
-          <Link href="/pokemon" className="px-2 py-2 underline">
-            Clear
-          </Link>
-        )}
-      </form>
+      <Suspense fallback={null}>
+        <PokemonSearchBox />
+      </Suspense>
 
       <p className="mt-2 text-zinc-600 dark:text-zinc-400">{subtitle}</p>
 

@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { readCustomPokemon } from "@/lib/custom-pokemon";
-import { getPokemonDetail } from "@/lib/pokeapi-pokemon";
+import { readCustomPokemon } from "@/features/pokemon/store";
+import { getPokemonDetail } from "@/features/pokemon/api";
 
 export const instant = false;
 

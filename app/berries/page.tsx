@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { readCustomBerries } from "@/lib/custom-berries";
+import { Suspense } from "react";
+import { readCustomBerries } from "@/features/berries/store";
 import {
   getAllBerryNames,
   getBerryPage,
-} from "@/lib/pokeapi-berries";
+} from "@/features/berries/api";
+import { BerrySearchBox } from "@/features/berries/components/BerrySearchBox";
 import type { ListItem } from "@/lib/pokeapi";
 
 export const instant = false;
@@ -66,25 +68,9 @@ export default async function BerriesPage({
         .
       </p>
 
-      <form method="get" className="mt-4 flex gap-2">
-        <input
-          name="q"
-          defaultValue={q}
-          placeholder="Search e.g. pecha"
-          className="flex-1 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700"
-        />
-        <button
-          type="submit"
-          className="rounded border border-zinc-300 px-4 py-2 dark:border-zinc-700"
-        >
-          Search
-        </button>
-        {isSearching && (
-          <Link href="/berries" className="px-2 py-2 underline">
-            Clear
-          </Link>
-        )}
-      </form>
+      <Suspense fallback={null}>
+        <BerrySearchBox />
+      </Suspense>
 
       <p className="mt-2 text-zinc-600 dark:text-zinc-400">{subtitle}</p>
 

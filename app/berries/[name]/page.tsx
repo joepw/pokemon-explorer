@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { readCustomBerries } from "@/lib/custom-berries";
-import { getBerryDetail } from "@/lib/pokeapi-berries";
+import { readCustomBerries } from "@/features/berries/store";
+import { getBerryDetail } from "@/features/berries/api";
 
 export const instant = false;
 

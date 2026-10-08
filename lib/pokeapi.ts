@@ -1,5 +1,3 @@
-// Shared PokéAPI list shapes. Both libraries paginate `{ name, url }`
-// results, so one small type covers both.
 export type ListItem = {
   name: string;
   url: string;

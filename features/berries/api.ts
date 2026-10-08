@@ -1,5 +1,5 @@
 import { cacheLife, cacheTag } from "next/cache";
-import type { ListResponse } from "./pokeapi";
+import type { ListResponse } from "@/lib/pokeapi";
 
 const BASE_URL = "https://pokeapi.co/api/v2";
 

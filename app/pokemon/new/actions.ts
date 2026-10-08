@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { addCustomPokemon } from "@/lib/custom-pokemon";
+import { addCustomPokemon } from "@/features/pokemon/store";
 
 export async function createCustomPokemon(formData: FormData) {
   "use server";

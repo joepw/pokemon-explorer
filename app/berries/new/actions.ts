@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { addCustomBerry } from "@/lib/custom-berries";
+import { addCustomBerry } from "@/features/berries/store";
 
 export async function createCustomBerry(formData: FormData) {
   "use server";

@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { createCustomBerry } from "./actions";
+import { BackButton } from "@/shared/ui/BackButton";
 
 // dynamic: reads searchParams
 export const instant = false;
@@ -16,12 +16,7 @@ export default async function NewBerryPage({
 
   return (
     <main className="mx-auto w-full max-w-3xl px-6 py-12">
-      <Link
-        href="/berries"
-        className="text-sm text-zinc-600 underline hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-      >
-        ← Back to Berries
-      </Link>
+      <BackButton label="Back to Berries" />
 
       <h1 className="mt-4 text-3xl font-bold tracking-tight">
         Add custom berry

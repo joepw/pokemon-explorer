@@ -17,7 +17,7 @@ export function BerrySearchBox() {
         <button
           type="button"
           onClick={() => setQuery("")}
-          className="px-2 py-2 underline"
+          className="px-2 py-2 underline cursor-pointer"
         >
           Clear
         </button>

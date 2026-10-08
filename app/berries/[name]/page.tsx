@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { readCustomBerries } from "@/features/berries/store";
 import {
@@ -7,6 +6,7 @@ import {
 } from "@/features/berries/api";
 import { deleteCustomBerryAction } from "./actions";
 import { Sprite } from "@/shared/ui/Sprite";
+import { BackButton } from "@/shared/ui/BackButton";
 
 // dynamic: reads :name params
 export const instant = false;
@@ -100,12 +100,7 @@ export default async function BerryDetailPage({
 
   return (
     <main className="mx-auto w-full max-w-3xl px-6 py-12">
-      <Link
-        href="/berries"
-        className="text-sm text-zinc-600 underline hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-      >
-        ← Back to Berries
-      </Link>
+      <BackButton label="Back to Berries" />
 
       <div className="mt-4 flex items-center gap-4">
         {view.image ? (

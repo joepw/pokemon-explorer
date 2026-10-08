@@ -3,6 +3,9 @@ import { createCustomPokemon } from "./actions";
 
 export const instant = false;
 
+const INPUT_CLASS =
+  "rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-700 dark:bg-zinc-950";
+
 export default async function NewPokemonPage({
   searchParams,
 }: {
@@ -12,7 +15,10 @@ export default async function NewPokemonPage({
 
   return (
     <main className="mx-auto w-full max-w-3xl px-6 py-12">
-      <Link href="/pokemon" className="text-sm underline">
+      <Link
+        href="/pokemon"
+        className="text-sm text-zinc-600 underline hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+      >
         ← Back to Pokémon
       </Link>
 
@@ -25,19 +31,25 @@ export default async function NewPokemonPage({
       </p>
 
       {error && (
-        <p className="mt-4 rounded border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p
+          role="alert"
+          className="mt-4 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+        >
           {error}
         </p>
       )}
 
-      <form action={createCustomPokemon} className="mt-6 flex flex-col gap-4">
+      <form
+        action={createCustomPokemon}
+        className="mt-6 flex flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
+      >
         <label className="flex flex-col gap-1">
           <span className="text-sm font-medium">Name</span>
           <input
             name="name"
             required
             placeholder="e.g. mychu"
-            className="rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700"
+            className={INPUT_CLASS}
           />
         </label>
 
@@ -47,7 +59,7 @@ export default async function NewPokemonPage({
             name="types"
             required
             placeholder="e.g. electric, fairy"
-            className="rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700"
+            className={INPUT_CLASS}
           />
         </label>
 
@@ -59,7 +71,7 @@ export default async function NewPokemonPage({
             name="abilities"
             required
             placeholder="e.g. static, lightning-rod"
-            className="rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700"
+            className={INPUT_CLASS}
           />
         </label>
 
@@ -73,7 +85,7 @@ export default async function NewPokemonPage({
               max={255}
               required
               defaultValue={50}
-              className="rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700"
+              className={INPUT_CLASS}
             />
           </label>
           <label className="flex flex-col gap-1">
@@ -85,7 +97,7 @@ export default async function NewPokemonPage({
               max={255}
               required
               defaultValue={50}
-              className="rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700"
+              className={INPUT_CLASS}
             />
           </label>
           <label className="flex flex-col gap-1">
@@ -97,14 +109,14 @@ export default async function NewPokemonPage({
               max={255}
               required
               defaultValue={50}
-              className="rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700"
+              className={INPUT_CLASS}
             />
           </label>
         </div>
 
         <button
           type="submit"
-          className="mt-2 rounded border border-zinc-300 px-4 py-2 font-medium dark:border-zinc-700"
+          className="mt-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
         >
           Add Pokémon
         </button>

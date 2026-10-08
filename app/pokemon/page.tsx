@@ -2,9 +2,15 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 import { readCustomPokemon } from "@/features/pokemon/store";
-import { getAllPokemonNames, getPokemonPage } from "@/features/pokemon/api";
+import {
+  getAllPokemonNames,
+  getPokemonPage,
+  getPokemonSpriteUrl,
+} from "@/features/pokemon/api";
 import { PokemonSearchBox } from "@/features/pokemon/components/PokemonSearchBox";
+import { Sprite } from "@/shared/ui/Sprite";
 import type { ListItem } from "@/lib/pokeapi";
+import { idFromResourceUrl } from "@/lib/utils";
 
 export const instant = false;
 
@@ -55,7 +61,7 @@ export default async function PokemonPage({
   }
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-6 py-12">
+    <main className="mx-auto w-full max-w-5xl px-6 py-12">
       <h1 className="text-3xl font-bold tracking-tight">Pokémon Library</h1>
 
       <p className="mt-2 text-zinc-600 dark:text-zinc-400">
@@ -72,38 +78,73 @@ export default async function PokemonPage({
 
       <p className="mt-2 text-zinc-600 dark:text-zinc-400">{subtitle}</p>
 
-      <ul className="mt-6 divide-y divide-zinc-200 rounded-lg border border-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
-        {items.map((p) => (
-          <li
-            key={p.name}
-            className="flex items-center justify-between px-4 py-3"
-          >
-            <Link
-              href={`/pokemon/${p.name}`}
-              className="font-medium capitalize underline"
-            >
-              {p.name}
-            </Link>
-            {!isSearching && (
-              <span className="truncate pl-4 font-mono text-xs text-zinc-500">
-                {p.url}
-              </span>
-            )}
-          </li>
-        ))}
-      </ul>
+      {items.length === 0 ? (
+        <div className="mt-6 rounded-lg border border-dashed px-6 py-12 text-center text-zinc-600 dark:border-zinc-700 dark:text-zinc-400">
+          No Pokémon match “{q}”.
+        </div>
+      ) : (
+        <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          {items.map((item) => {
+            const id = item.url ? idFromResourceUrl(item.url) : null;
+            const isCustom = item.url === "";
+            const tile = (
+              <div className="flex h-24 w-24 items-center justify-center rounded-lg bg-zinc-100 text-3xl font-bold text-zinc-500 dark:bg-zinc-900">
+                {item.name.charAt(0).toUpperCase()}
+              </div>
+            );
+
+            return (
+              <li key={item.name}>
+                <Link
+                  href={`/pokemon/${item.name}`}
+                  className="flex h-full flex-col items-center rounded-lg border border-zinc-200 p-4 text-center transition hover:border-zinc-400 hover:shadow-sm dark:border-zinc-800 dark:hover:border-zinc-600"
+                >
+                  {id !== null ? (
+                    <Sprite
+                      src={getPokemonSpriteUrl(id)}
+                      alt={item.name}
+                      width={96}
+                      height={96}
+                      fallback={tile}
+                    />
+                  ) : (
+                    tile
+                  )}
+                  <span className="mt-2 flex flex-wrap items-center justify-center gap-1 text-sm font-medium capitalize">
+                    {item.name}
+                    {isCustom && (
+                      <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-xs font-normal text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+                        custom
+                      </span>
+                    )}
+                  </span>
+                  {id !== null && (
+                    <span className="text-xs text-zinc-500">#{id}</span>
+                  )}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
       {!isSearching && (
         <nav className="mt-6 flex items-center justify-between">
           {page > 1 ? (
-            <Link href={buildPageHref(page - 1, q)} className="underline">
+            <Link
+              href={buildPageHref(page - 1, q)}
+              className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-900"
+            >
               ← Previous
             </Link>
           ) : (
             <span />
           )}
           {hasNext ? (
-            <Link href={buildPageHref(page + 1, q)} className="underline">
+            <Link
+              href={buildPageHref(page + 1, q)}
+              className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-900"
+            >
               Next →
             </Link>
           ) : (

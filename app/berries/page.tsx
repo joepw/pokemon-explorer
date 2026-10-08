@@ -4,9 +4,12 @@ import { readCustomBerries } from "@/features/berries/store";
 import {
   getAllBerryNames,
   getBerryPage,
+  getBerrySpriteUrl,
 } from "@/features/berries/api";
 import { BerrySearchBox } from "@/features/berries/components/BerrySearchBox";
+import { Sprite } from "@/shared/ui/Sprite";
 import type { ListItem } from "@/lib/pokeapi";
+import { idFromResourceUrl } from "@/lib/utils";
 
 export const instant = false;
 
@@ -57,7 +60,7 @@ export default async function BerriesPage({
   }
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-6 py-12">
+    <main className="mx-auto w-full max-w-5xl px-6 py-12">
       <h1 className="text-3xl font-bold tracking-tight">Berries Library</h1>
 
       <p className="mt-2 text-zinc-600 dark:text-zinc-400">
@@ -74,38 +77,73 @@ export default async function BerriesPage({
 
       <p className="mt-2 text-zinc-600 dark:text-zinc-400">{subtitle}</p>
 
-      <ul className="mt-6 divide-y divide-zinc-200 rounded-lg border border-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
-        {items.map((b) => (
-          <li
-            key={b.name}
-            className="flex items-center justify-between px-4 py-3"
-          >
-            <Link
-              href={`/berries/${b.name}`}
-              className="font-medium capitalize underline"
-            >
-              {b.name}
-            </Link>
-            {!isSearching && (
-              <span className="truncate pl-4 font-mono text-xs text-zinc-500">
-                {b.url}
-              </span>
-            )}
-          </li>
-        ))}
-      </ul>
+      {items.length === 0 ? (
+        <div className="mt-6 rounded-lg border border-dashed px-6 py-12 text-center text-zinc-600 dark:border-zinc-700 dark:text-zinc-400">
+          No berries match “{q}”.
+        </div>
+      ) : (
+        <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          {items.map((item) => {
+            const id = item.url ? idFromResourceUrl(item.url) : null;
+            const isCustom = item.url === "";
+            const tile = (
+              <div className="flex h-24 w-24 items-center justify-center rounded-lg bg-rose-100 text-3xl font-bold text-rose-700 dark:bg-rose-950 dark:text-rose-300">
+                {item.name.charAt(0).toUpperCase()}
+              </div>
+            );
+
+            return (
+              <li key={item.name}>
+                <Link
+                  href={`/berries/${item.name}`}
+                  className="flex h-full flex-col items-center rounded-lg border border-zinc-200 p-4 text-center transition hover:border-zinc-400 hover:shadow-sm dark:border-zinc-800 dark:hover:border-zinc-600"
+                >
+                  {!isCustom ? (
+                    <Sprite
+                      src={getBerrySpriteUrl(item.name)}
+                      alt={item.name}
+                      width={96}
+                      height={96}
+                      fallback={tile}
+                    />
+                  ) : (
+                    tile
+                  )}
+                  <span className="mt-2 flex flex-wrap items-center justify-center gap-1 text-sm font-medium capitalize">
+                    {item.name}
+                    {isCustom && (
+                      <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-xs font-normal text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+                        custom
+                      </span>
+                    )}
+                  </span>
+                  {id !== null && (
+                    <span className="text-xs text-zinc-500">#{id}</span>
+                  )}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
       {!isSearching && (
         <nav className="mt-6 flex items-center justify-between">
           {page > 1 ? (
-            <Link href={buildPageHref(page - 1, q)} className="underline">
+            <Link
+              href={buildPageHref(page - 1, q)}
+              className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-900"
+            >
               ← Previous
             </Link>
           ) : (
             <span />
           )}
           {hasNext ? (
-            <Link href={buildPageHref(page + 1, q)} className="underline">
+            <Link
+              href={buildPageHref(page + 1, q)}
+              className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-900"
+            >
               Next →
             </Link>
           ) : (

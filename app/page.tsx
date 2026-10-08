@@ -12,7 +12,7 @@ export default function Home() {
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         <Link
           href="/pokemon"
-          className="rounded-lg border border-zinc-200 p-6 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
+          className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm transition hover:border-zinc-400 hover:shadow dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-600"
         >
           <h2 className="text-xl font-semibold">Pokémon Library →</h2>
           <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
@@ -21,7 +21,7 @@ export default function Home() {
         </Link>
         <Link
           href="/berries"
-          className="rounded-lg border border-zinc-200 p-6 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
+          className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm transition hover:border-zinc-400 hover:shadow dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-600"
         >
           <h2 className="text-xl font-semibold">Berries Library →</h2>
           <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">

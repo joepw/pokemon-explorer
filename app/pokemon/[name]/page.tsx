@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { readCustomPokemon } from "@/lib/custom-pokemon";
 
 type PokemonType = {
   slot: number;
@@ -27,6 +29,17 @@ type PokemonDetail = {
   stats: PokemonStat[];
 };
 
+type DetailView = {
+  name: string;
+  titleSuffix: string;
+  isCustom: boolean;
+  image: string | null;
+  meta: string | null;
+  types: string[];
+  abilities: { name: string; hidden: boolean }[];
+  stats: { name: string; value: number }[];
+};
+
 export default async function PokemonDetailPage({
   params,
 }: {
@@ -34,13 +47,51 @@ export default async function PokemonDetailPage({
 }) {
   const { name } = await params;
 
+  let view: DetailView | null = null;
+
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
 
-  if (!res.ok) {
-    throw new Error(`Failed to fetch pokemon "${name}": ${res.status}`);
+  if (res.ok) {
+    const p: PokemonDetail = await res.json();
+    view = {
+      name: p.name,
+      titleSuffix: `#${p.id}`,
+      isCustom: false,
+      image: p.sprites.front_default,
+      meta: `Height: ${p.height} · Weight: ${p.weight}`,
+      types: p.types.map((t) => t.type.name),
+      abilities: p.abilities.map((a) => ({
+        name: a.ability.name,
+        hidden: a.is_hidden,
+      })),
+      stats: p.stats.map((s) => ({ name: s.stat.name, value: s.base_stat })),
+    };
+  } else {
+    const customs = await readCustomPokemon();
+    const custom = customs.find(
+      (c) => c.name.toLowerCase() === name.toLowerCase()
+    );
+    if (custom) {
+      view = {
+        name: custom.name,
+        titleSuffix: "",
+        isCustom: true,
+        image: null,
+        meta: null,
+        types: custom.types,
+        abilities: custom.abilities.map((a) => ({ name: a, hidden: false })),
+        stats: [
+          { name: "hp", value: custom.hp },
+          { name: "attack", value: custom.attack },
+          { name: "defense", value: custom.defense },
+        ],
+      };
+    }
   }
 
-  const p: PokemonDetail = await res.json();
+  if (!view) {
+    notFound();
+  }
 
   return (
     <main className="mx-auto w-full max-w-3xl px-6 py-12">
@@ -49,28 +100,28 @@ export default async function PokemonDetailPage({
       </Link>
 
       <h1 className="mt-4 text-3xl font-bold capitalize">
-        {p.name} <span className="text-zinc-500">#{p.id}</span>
+        {view.name}{" "}
+        {view.isCustom ? (
+          <span className="rounded bg-zinc-200 px-2 py-0.5 align-middle text-sm font-medium text-zinc-700">
+            custom
+          </span>
+        ) : (
+          <span className="text-zinc-500">{view.titleSuffix}</span>
+        )}
       </h1>
 
-      {p.sprites.front_default && (
-        <Image
-          src={p.sprites.front_default}
-          alt={p.name}
-          width={120}
-          height={120}
-        />
+      {view.image && (
+        <Image src={view.image} alt={view.name} width={120} height={120} />
       )}
 
-      <p className="mt-2 text-sm text-zinc-600">
-        Height: {p.height} · Weight: {p.weight}
-      </p>
+      {view.meta && <p className="mt-2 text-sm text-zinc-600">{view.meta}</p>}
 
       <section className="mt-6">
         <h2 className="text-xl font-semibold">Types</h2>
         <ul className="mt-2 list-disc pl-6">
-          {p.types.map((t) => (
-            <li key={t.type.name} className="capitalize">
-              {t.type.name}
+          {view.types.map((t) => (
+            <li key={t} className="capitalize">
+              {t}
             </li>
           ))}
         </ul>
@@ -79,10 +130,10 @@ export default async function PokemonDetailPage({
       <section className="mt-6">
         <h2 className="text-xl font-semibold">Abilities</h2>
         <ul className="mt-2 list-disc pl-6">
-          {p.abilities.map((a) => (
-            <li key={a.ability.name} className="capitalize">
-              {a.ability.name}
-              {a.is_hidden ? " (hidden)" : ""}
+          {view.abilities.map((a) => (
+            <li key={a.name} className="capitalize">
+              {a.name}
+              {a.hidden ? " (hidden)" : ""}
             </li>
           ))}
         </ul>
@@ -91,9 +142,9 @@ export default async function PokemonDetailPage({
       <section className="mt-6">
         <h2 className="text-xl font-semibold">Base stats</h2>
         <ul className="mt-2 list-disc pl-6">
-          {p.stats.map((s) => (
-            <li key={s.stat.name}>
-              {s.stat.name}: {s.base_stat}
+          {view.stats.map((s) => (
+            <li key={s.name}>
+              {s.name}: {s.value}
             </li>
           ))}
         </ul>

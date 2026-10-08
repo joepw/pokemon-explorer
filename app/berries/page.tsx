@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { readCustomBerries } from "@/lib/custom-berries";
 
 type BerryListItem = {
   name: string;
@@ -42,9 +43,13 @@ export default async function BerriesPage({
       throw new Error(`Search failed: ${allRes.status}`);
     }
     const all: BerryListResponse = await allRes.json();
-    items = all.results
+    const customs = (await readCustomBerries())
       .filter((b) => b.name.includes(q))
-      .slice(0, SEARCH_LIMIT);
+      .map((b) => ({ name: b.name, url: "" }));
+    items = [...customs, ...all.results.filter((b) => b.name.includes(q))].slice(
+      0,
+      SEARCH_LIMIT
+    );
     subtitle = `${items.length} match${items.length === 1 ? "" : "es"} for “${q}” (showing first ${SEARCH_LIMIT}).`;
   } else {
     const parsed = parseInt(pageParam ?? "1", 10);
@@ -67,6 +72,14 @@ export default async function BerriesPage({
   return (
     <main className="mx-auto w-full max-w-3xl px-6 py-12">
       <h1 className="text-3xl font-bold tracking-tight">Berries Library</h1>
+
+      <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+        Browse berries, or{" "}
+        <Link href="/berries/new" className="underline">
+          add your own custom berry
+        </Link>
+        .
+      </p>
 
       <form method="get" className="mt-4 flex gap-2">
         <input

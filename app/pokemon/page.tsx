@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { readCustomPokemon } from "@/lib/custom-pokemon";
+
 type PokemonListItem = {
   name: string;
   url: string;
@@ -44,9 +46,13 @@ export default async function PokemonPage({
       throw new Error(`Search failed: ${allRes.status}`);
     }
     const all: PokemonListResponse = await allRes.json();
-    items = all.results
+    const customs = (await readCustomPokemon())
       .filter((p) => p.name.includes(q))
-      .slice(0, SEARCH_LIMIT);
+      .map((p) => ({ name: p.name, url: "" }));
+    items = [...customs, ...all.results.filter((p) => p.name.includes(q))].slice(
+      0,
+      SEARCH_LIMIT
+    );
     subtitle = `${items.length} match${items.length === 1 ? "" : "es"} for “${q}” (showing first ${SEARCH_LIMIT}).`;
   } else {
     const parsed = parseInt(pageParam ?? "1", 10);
@@ -69,6 +75,14 @@ export default async function PokemonPage({
   return (
     <main className="mx-auto w-full max-w-3xl px-6 py-12">
       <h1 className="text-3xl font-bold tracking-tight">Pokémon Library</h1>
+
+      <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+        Browse Pokémon, or{" "}
+        <Link href="/pokemon/new" className="underline">
+          add your own custom Pokémon
+        </Link>
+        .
+      </p>
 
       <form method="get" className="mt-4 flex gap-2">
         <input

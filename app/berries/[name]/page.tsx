@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { readCustomBerries } from "@/lib/custom-berries";
 
 type BerryFlavor = {
   potency: number;
@@ -20,6 +22,14 @@ type BerryDetail = {
   flavors: BerryFlavor[];
 };
 
+type DetailView = {
+  name: string;
+  titleSuffix: string;
+  isCustom: boolean;
+  summary: string[];
+  flavors: { name: string; potency: number | string }[];
+};
+
 export default async function BerryDetailPage({
   params,
 }: {
@@ -27,13 +37,48 @@ export default async function BerryDetailPage({
 }) {
   const { name } = await params;
 
+  let view: DetailView | null = null;
+
   const res = await fetch(`https://pokeapi.co/api/v2/berry/${name}`);
 
-  if (!res.ok) {
-    throw new Error(`Failed to fetch berry "${name}": ${res.status}`);
+  if (res.ok) {
+    const b: BerryDetail = await res.json();
+    view = {
+      name: b.name,
+      titleSuffix: `#${b.id}`,
+      isCustom: false,
+      summary: [
+        `Firmness: ${b.firmness.name} · Size: ${b.size} · Smoothness: ${b.smoothness}`,
+        `Growth time: ${b.growth_time} · Max harvest: ${b.max_harvest} · Soil dryness: ${b.soil_dryness}`,
+        `Natural gift: power ${b.natural_gift_power ?? "—"}, type ${b.natural_gift_type?.name ?? "—"} · Item: ${b.item.name}`,
+      ],
+      flavors: b.flavors.map((f) => ({
+        name: f.flavor.name,
+        potency: f.potency,
+      })),
+    };
+  } else {
+    const customs = await readCustomBerries();
+    const custom = customs.find(
+      (c) => c.name.toLowerCase() === name.toLowerCase()
+    );
+    if (custom) {
+      view = {
+        name: custom.name,
+        titleSuffix: "",
+        isCustom: true,
+        summary: [
+          `Firmness: ${custom.firmness} · Size: ${custom.size} · Smoothness: ${custom.smoothness}`,
+          `Growth time: ${custom.growthTime} · Max harvest: ${custom.maxHarvest}`,
+        ],
+        flavors: [],
+      };
+    }
   }
 
-  const b: BerryDetail = await res.json();
+  if (!view) {
+    notFound();
+  }
 
   return (
     <main className="mx-auto w-full max-w-3xl px-6 py-12">
@@ -42,33 +87,34 @@ export default async function BerryDetailPage({
       </Link>
 
       <h1 className="mt-4 text-3xl font-bold capitalize">
-        {b.name} <span className="text-zinc-500">#{b.id}</span>
+        {view.name}{" "}
+        {view.isCustom ? (
+          <span className="rounded bg-zinc-200 px-2 py-0.5 align-middle text-sm font-medium text-zinc-700">
+            custom
+          </span>
+        ) : (
+          <span className="text-zinc-500">{view.titleSuffix}</span>
+        )}
       </h1>
 
-      <p className="mt-2 text-sm text-zinc-600">
-        Firmness: <span className="capitalize">{b.firmness.name}</span> · Size:{" "}
-        {b.size} · Smoothness: {b.smoothness}
-      </p>
-      <p className="mt-1 text-sm text-zinc-600">
-        Growth time: {b.growth_time} · Max harvest: {b.max_harvest} · Soil
-        dryness: {b.soil_dryness}
-      </p>
-      <p className="mt-1 text-sm text-zinc-600">
-        Natural gift: power {b.natural_gift_power ?? "—"}, type{" "}
-        <span className="capitalize">{b.natural_gift_type?.name ?? "—"}</span>{" "}
-        · Item: <span className="capitalize">{b.item.name}</span>
-      </p>
+      {view.summary.map((line) => (
+        <p key={line} className="mt-2 text-sm text-zinc-600 capitalize">
+          {line}
+        </p>
+      ))}
 
-      <section className="mt-6">
-        <h2 className="text-xl font-semibold">Flavors</h2>
-        <ul className="mt-2 list-disc pl-6">
-          {b.flavors.map((f) => (
-            <li key={f.flavor.name}>
-              {f.flavor.name}: {f.potency}
-            </li>
-          ))}
-        </ul>
-      </section>
+      {view.flavors.length > 0 && (
+        <section className="mt-6">
+          <h2 className="text-xl font-semibold">Flavors</h2>
+          <ul className="mt-2 list-disc pl-6">
+            {view.flavors.map((f) => (
+              <li key={f.name}>
+                {f.name}: {f.potency}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </main>
   );
 }

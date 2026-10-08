@@ -42,7 +42,7 @@ export type CustomPokemon = z.output<typeof customPokemonSchema> & {
   createdAt: string;
 };
 
-const DATA_FILE = path.join(process.cwd(), "data", "custom-pokemon.json");
+const DATA_FILE = "/tmp/custom-pokemon.json";
 
 export async function readCustomPokemon(): Promise<CustomPokemon[]> {
   try {

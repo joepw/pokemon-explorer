@@ -1,5 +1,4 @@
 import { promises as fs } from "fs";
-import path from "path";
 import { z } from "zod";
 
 export const customBerrySchema = z.object({
@@ -22,7 +21,7 @@ export type CustomBerry = z.output<typeof customBerrySchema> & {
   createdAt: string;
 };
 
-const DATA_FILE = path.join(process.cwd(), "data", "custom-berries.json");
+const DATA_FILE = "/tmp/custom-berries.json";
 
 export async function readCustomBerries(): Promise<CustomBerry[]> {
   try {

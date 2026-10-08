@@ -12,6 +12,7 @@ import { Sprite } from "@/shared/ui/Sprite";
 import type { ListItem } from "@/lib/pokeapi";
 import { idFromResourceUrl } from "@/lib/utils";
 
+// dynamic: reads searchParams
 export const instant = false;
 
 const PAGE_SIZE = 20;

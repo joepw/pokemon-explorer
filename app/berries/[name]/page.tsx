@@ -7,6 +7,7 @@ import {
 } from "@/features/berries/api";
 import { Sprite } from "@/shared/ui/Sprite";
 
+// dynamic: reads :name params
 export const instant = false;
 
 type DetailView = {

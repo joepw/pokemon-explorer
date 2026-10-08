@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createCustomBerry } from "./actions";
 
+// dynamic: reads searchParams
 export const instant = false;
 
 const INPUT_CLASS =

@@ -4,6 +4,7 @@ import { readCustomPokemon } from "@/features/pokemon/store";
 import { getPokemonDetail } from "@/features/pokemon/api";
 import { Sprite } from "@/shared/ui/Sprite";
 
+// dynamic: reads :name params
 export const instant = false;
 
 type DetailView = {

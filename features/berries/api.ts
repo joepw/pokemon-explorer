@@ -17,6 +17,7 @@ async function fetchJson<T>(path: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+// null on 404 so callers can fall back to the custom store
 async function fetchJsonOrNull<T>(path: string): Promise<T | null> {
   const res = await fetch(`${BASE_URL}${path}`);
   if (res.status === 404) {

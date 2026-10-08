@@ -9,6 +9,10 @@ type UseLibrarySearchOptions = {
   debounceMs?: number;
 };
 
+/**
+ * Debounces the input and syncs it to `?q=`. Fetching stays on the server
+ * page. Needs a Suspense boundary (uses useSearchParams).
+ */
 export function useLibrarySearch({
   basePath,
   debounceMs = 300,

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createCustomPokemon } from "./actions";
 
+// dynamic: reads searchParams
 export const instant = false;
 
 const INPUT_CLASS =

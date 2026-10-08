@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pokémon Explorer
 
-## Getting Started
+A web app for exploring Pokémon and berry data from [PokéAPI](https://pokeapi.co) — browse, search, paginate, inspect details, and add your own custom entries.
 
-First, run the development server:
+## Features
+
+**Pokémon Library** (`/pokemon`)
+- Paginated list with sprite cards
+- Debounced search across all 1351+ names (custom entries included)
+- Detail pages: types, abilities (hidden flagged), base stat bars
+- Add custom Pokémon via form (name, types, abilities, HP/attack/defense)
+
+**Berries Library** (`/berries`)
+- Paginated list with item sprites
+- Search across all berries + customs
+- Detail pages: firmness, size, growth, natural gift, flavor potency bars
+- Add custom berries via form
+
+Custom entries are stored in local JSON files and merged into search results and detail pages — PokéAPI is read-only, so there's no real create endpoint. The store modules wrap the file access, so swapping in a database later only means changing those.
+
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | What it does |
+|---|---|
+| `npm run dev` | Dev server (Turbopack) |
+| `npm run build` | Production build |
+| `npm run lint` | ESLint |
+| `npm test` | Unit tests (Vitest) |
 
-## Learn More
+## Stack
 
-To learn more about Next.js, take a look at the following resources:
+- Next.js 16 (App Router, React Server Components, Server Actions, Cache Components)
+- Tailwind CSS v4
+- Zod for input validation
+- Vitest + Testing Library
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+app/                  routes only — parse params, call features, render
+  pokemon/            list, detail, add-custom, loading/error states
+  berries/            same shape
+  layout.tsx          shell: nav, footer, metadata
+  not-found.tsx       styled 404
+  error.tsx           global error boundary
+features/pokemon/     pokemon slice: api.ts (cached fetches), store.ts (zod + JSON), components/
+features/berries/     berry slice — same layout, never imports from pokemon
+shared/               cross-cutting: hooks/ (debounce, search), ui/ (NavLinks, Sprite)
+lib/                  pokeapi.ts (API types), utils.ts (pure helpers)
+data/                 custom-pokemon.json, custom-berries.json
+```
 
-## Deploy on Vercel
+The two libraries are separate slices under `features/`. Each owns its data access, validation, storage, and components; `app/` routes stay thin. The rule: `features/pokemon` and `features/berries` never import from each other — shared code goes in `shared/` or `lib/`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Tests
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm test
+```
+
+Covers the zod schemas, the custom-data stores (fs mocked in-memory), the URL id parser, and the debounce hook.

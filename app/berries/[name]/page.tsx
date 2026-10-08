@@ -1,26 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { readCustomBerries } from "@/lib/custom-berries";
+import { getBerryDetail } from "@/lib/pokeapi-berries";
 
-type BerryFlavor = {
-  potency: number;
-  flavor: { name: string; url: string };
-};
-
-type BerryDetail = {
-  id: number;
-  name: string;
-  growth_time: number;
-  max_harvest: number;
-  natural_gift_power: number | null;
-  size: number;
-  smoothness: number;
-  soil_dryness: number;
-  firmness: { name: string; url: string };
-  item: { name: string; url: string };
-  natural_gift_type: { name: string; url: string } | null;
-  flavors: BerryFlavor[];
-};
+export const instant = false;
 
 type DetailView = {
   name: string;
@@ -39,25 +22,23 @@ export default async function BerryDetailPage({
 
   let view: DetailView | null = null;
 
-  const res = await fetch(`https://pokeapi.co/api/v2/berry/${name}`);
-
-  if (res.ok) {
-    const b: BerryDetail = await res.json();
+  try {
+    const detail = await getBerryDetail(name);
     view = {
-      name: b.name,
-      titleSuffix: `#${b.id}`,
+      name: detail.name,
+      titleSuffix: `#${detail.id}`,
       isCustom: false,
       summary: [
-        `Firmness: ${b.firmness.name} · Size: ${b.size} · Smoothness: ${b.smoothness}`,
-        `Growth time: ${b.growth_time} · Max harvest: ${b.max_harvest} · Soil dryness: ${b.soil_dryness}`,
-        `Natural gift: power ${b.natural_gift_power ?? "—"}, type ${b.natural_gift_type?.name ?? "—"} · Item: ${b.item.name}`,
+        `Firmness: ${detail.firmness.name} · Size: ${detail.size} · Smoothness: ${detail.smoothness}`,
+        `Growth time: ${detail.growth_time} · Max harvest: ${detail.max_harvest} · Soil dryness: ${detail.soil_dryness}`,
+        `Natural gift: power ${detail.natural_gift_power ?? "—"}, type ${detail.natural_gift_type?.name ?? "—"} · Item: ${detail.item.name}`,
       ],
-      flavors: b.flavors.map((f) => ({
+      flavors: detail.flavors.map((f) => ({
         name: f.flavor.name,
         potency: f.potency,
       })),
     };
-  } else {
+  } catch {
     const customs = await readCustomBerries();
     const custom = customs.find(
       (c) => c.name.toLowerCase() === name.toLowerCase()

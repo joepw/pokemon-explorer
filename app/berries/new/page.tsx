@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { createCustomBerry } from "./actions";
 
+export const instant = false;
+
 export default async function NewBerryPage({
   searchParams,
 }: {

@@ -1,17 +1,12 @@
 import Link from "next/link";
 import { readCustomBerries } from "@/lib/custom-berries";
+import {
+  getAllBerryNames,
+  getBerryPage,
+} from "@/lib/pokeapi-berries";
+import type { ListItem } from "@/lib/pokeapi";
 
-type BerryListItem = {
-  name: string;
-  url: string;
-};
-
-type BerryListResponse = {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: BerryListItem[];
-};
+export const instant = false;
 
 const PAGE_SIZE = 20;
 const SEARCH_LIMIT = 20;
@@ -32,21 +27,17 @@ export default async function BerriesPage({
   const q = (qParam ?? "").trim().toLowerCase();
   const isSearching = q.length > 0;
 
-  let items: BerryListItem[] = [];
+  let items: ListItem[] = [];
   let subtitle = "";
   let page = 1;
   let hasNext = false;
 
   if (isSearching) {
-    const allRes = await fetch("https://pokeapi.co/api/v2/berry?limit=100000");
-    if (!allRes.ok) {
-      throw new Error(`Search failed: ${allRes.status}`);
-    }
-    const all: BerryListResponse = await allRes.json();
+    const allNames = await getAllBerryNames();
     const customs = (await readCustomBerries())
       .filter((b) => b.name.includes(q))
       .map((b) => ({ name: b.name, url: "" }));
-    items = [...customs, ...all.results.filter((b) => b.name.includes(q))].slice(
+    items = [...customs, ...allNames.filter((b) => b.name.includes(q))].slice(
       0,
       SEARCH_LIMIT
     );
@@ -56,13 +47,7 @@ export default async function BerriesPage({
     page = Number.isNaN(parsed) || parsed < 1 ? 1 : parsed;
     const offset = (page - 1) * PAGE_SIZE;
 
-    const res = await fetch(
-      `https://pokeapi.co/api/v2/berry?offset=${offset}&limit=${PAGE_SIZE}`
-    );
-    if (!res.ok) {
-      throw new Error(`Failed to fetch berries: ${res.status}`);
-    }
-    const data: BerryListResponse = await res.json();
+    const data = await getBerryPage(offset, PAGE_SIZE);
     items = data.results;
     const totalPages = Math.ceil(data.count / PAGE_SIZE);
     subtitle = `Page ${page} of ${totalPages} · ${data.count} berries total.`;

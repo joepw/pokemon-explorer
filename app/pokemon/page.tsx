@@ -1,18 +1,13 @@
 import Link from "next/link";
 
 import { readCustomPokemon } from "@/lib/custom-pokemon";
+import {
+  getAllPokemonNames,
+  getPokemonPage,
+} from "@/lib/pokeapi-pokemon";
+import type { ListItem } from "@/lib/pokeapi";
 
-type PokemonListItem = {
-  name: string;
-  url: string;
-};
-
-type PokemonListResponse = {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: PokemonListItem[];
-};
+export const instant = false;
 
 const PAGE_SIZE = 20;
 const SEARCH_LIMIT = 20;
@@ -33,23 +28,17 @@ export default async function PokemonPage({
   const q = (qParam ?? "").trim().toLowerCase();
   const isSearching = q.length > 0;
 
-  let items: PokemonListItem[] = [];
+  let items: ListItem[] = [];
   let subtitle = "";
   let page = 1;
   let hasNext = false;
 
   if (isSearching) {
-    const allRes = await fetch(
-      "https://pokeapi.co/api/v2/pokemon?limit=100000"
-    );
-    if (!allRes.ok) {
-      throw new Error(`Search failed: ${allRes.status}`);
-    }
-    const all: PokemonListResponse = await allRes.json();
+    const allNames = await getAllPokemonNames();
     const customs = (await readCustomPokemon())
       .filter((p) => p.name.includes(q))
       .map((p) => ({ name: p.name, url: "" }));
-    items = [...customs, ...all.results.filter((p) => p.name.includes(q))].slice(
+    items = [...customs, ...allNames.filter((p) => p.name.includes(q))].slice(
       0,
       SEARCH_LIMIT
     );
@@ -59,13 +48,7 @@ export default async function PokemonPage({
     page = Number.isNaN(parsed) || parsed < 1 ? 1 : parsed;
     const offset = (page - 1) * PAGE_SIZE;
 
-    const res = await fetch(
-      `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${PAGE_SIZE}`
-    );
-    if (!res.ok) {
-      throw new Error(`Failed to fetch pokemon: ${res.status}`);
-    }
-    const data: PokemonListResponse = await res.json();
+    const data = await getPokemonPage(offset, PAGE_SIZE);
     items = data.results;
     const totalPages = Math.ceil(data.count / PAGE_SIZE);
     subtitle = `Page ${page} of ${totalPages} · ${data.count} Pokémon total.`;
@@ -148,4 +131,5 @@ export default async function PokemonPage({
     </main>
   );
 }
+
 

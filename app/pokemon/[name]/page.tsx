@@ -2,32 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { readCustomPokemon } from "@/lib/custom-pokemon";
+import { getPokemonDetail } from "@/lib/pokeapi-pokemon";
 
-type PokemonType = {
-  slot: number;
-  type: { name: string; url: string };
-};
-
-type PokemonAbility = {
-  ability: { name: string; url: string };
-  is_hidden: boolean;
-};
-
-type PokemonStat = {
-  base_stat: number;
-  stat: { name: string; url: string };
-};
-
-type PokemonDetail = {
-  id: number;
-  name: string;
-  height: number;
-  weight: number;
-  sprites: { front_default: string | null };
-  types: PokemonType[];
-  abilities: PokemonAbility[];
-  stats: PokemonStat[];
-};
+export const instant = false;
 
 type DetailView = {
   name: string;
@@ -49,24 +26,22 @@ export default async function PokemonDetailPage({
 
   let view: DetailView | null = null;
 
-  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
-
-  if (res.ok) {
-    const p: PokemonDetail = await res.json();
+  try {
+    const detail = await getPokemonDetail(name);
     view = {
-      name: p.name,
-      titleSuffix: `#${p.id}`,
+      name: detail.name,
+      titleSuffix: `#${detail.id}`,
       isCustom: false,
-      image: p.sprites.front_default,
-      meta: `Height: ${p.height} · Weight: ${p.weight}`,
-      types: p.types.map((t) => t.type.name),
-      abilities: p.abilities.map((a) => ({
+      image: detail.sprites.front_default,
+      meta: `Height: ${detail.height} · Weight: ${detail.weight}`,
+      types: detail.types.map((t) => t.type.name),
+      abilities: detail.abilities.map((a) => ({
         name: a.ability.name,
         hidden: a.is_hidden,
       })),
-      stats: p.stats.map((s) => ({ name: s.stat.name, value: s.base_stat })),
+      stats: detail.stats.map((s) => ({ name: s.stat.name, value: s.base_stat })),
     };
-  } else {
+  } catch {
     const customs = await readCustomPokemon();
     const custom = customs.find(
       (c) => c.name.toLowerCase() === name.toLowerCase()

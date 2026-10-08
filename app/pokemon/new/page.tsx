@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { createCustomPokemon } from "./actions";
 
+export const instant = false;
+
 export default async function NewPokemonPage({
   searchParams,
 }: {

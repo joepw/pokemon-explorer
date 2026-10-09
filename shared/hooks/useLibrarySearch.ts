@@ -2,7 +2,6 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useDebouncedValue } from "@/shared/hooks/useDebouncedValue";
 
 type UseLibrarySearchOptions = {
   basePath: string;
@@ -10,8 +9,8 @@ type UseLibrarySearchOptions = {
 };
 
 /**
- * Debounces the input and syncs it to `?q=`. Fetching stays on the server
- * page. Needs a Suspense boundary (uses useSearchParams).
+ * Manages search state, debouncing input changes to the URL `?q=` parameter.
+ * Automatically resets the input if the URL changes externally (e.g. redirects).
  */
 export function useLibrarySearch({
   basePath,
@@ -19,17 +18,32 @@ export function useLibrarySearch({
 }: UseLibrarySearchOptions) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialQuery = searchParams.get("q") ?? "";
-  const [query, setQuery] = useState(initialQuery);
-  const debouncedQuery = useDebouncedValue(query.trim().toLowerCase(), debounceMs);
+  
+  const urlQuery = searchParams.get("q") ?? "";
+  const [inputValue, setInputValue] = useState(urlQuery);
+  const [lastSyncedUrlQuery, setLastSyncedUrlQuery] = useState(urlQuery);
+
+  // Sync if URL changed externally (e.g. redirect)
+  if (urlQuery !== lastSyncedUrlQuery) {
+    setLastSyncedUrlQuery(urlQuery);
+    setInputValue(urlQuery);
+  }
 
   useEffect(() => {
-    if (debouncedQuery === initialQuery.toLowerCase()) return;
-    const params = new URLSearchParams();
-    if (debouncedQuery) params.set("q", debouncedQuery);
-    const suffix = params.size > 0 ? `?${params.toString()}` : "";
-    router.replace(`${basePath}${suffix}`);
-  }, [debouncedQuery, initialQuery, basePath, router]);
+    // Only push to URL if the local input has actually changed
+    if (inputValue.trim().toLowerCase() === urlQuery.toLowerCase()) return;
 
-  return { query, setQuery };
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams();
+      const normalized = inputValue.trim().toLowerCase();
+      if (normalized) params.set("q", normalized);
+      
+      const suffix = params.size > 0 ? `?${params.toString()}` : "";
+      router.replace(`${basePath}${suffix}`);
+    }, debounceMs);
+
+    return () => clearTimeout(timer);
+  }, [inputValue, urlQuery, basePath, router, debounceMs]);
+
+  return { inputValue, setInputValue };
 }

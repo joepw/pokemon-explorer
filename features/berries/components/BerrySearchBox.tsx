@@ -3,20 +3,20 @@
 import { useLibrarySearch } from "@/shared/hooks/useLibrarySearch";
 
 export function BerrySearchBox() {
-  const { query, setQuery } = useLibrarySearch({ basePath: "/berries" });
+  const { inputValue, setInputValue } = useLibrarySearch({ basePath: "/berries" });
 
   return (
     <div className="mt-4 flex gap-2">
       <input
-        value={query}
-        onChange={(event) => setQuery(event.target.value)}
+        value={inputValue}
+        onChange={(event) => setInputValue(event.target.value)}
         placeholder="Search e.g. pecha"
-        className="flex-1 rounded border border-zinc-300 px-3 py-2 dark:border-zinc-700"
+        className="flex-1 rounded-md border border-stone-300 bg-[#fffdf7] px-3 py-2 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-200"
       />
-      {query && (
+      {inputValue && (
         <button
           type="button"
-          onClick={() => setQuery("")}
+          onClick={() => setInputValue("")}
           className="px-2 py-2 underline cursor-pointer"
         >
           Clear

@@ -10,15 +10,15 @@ A web app for exploring Pokémon and berry data from [PokéAPI](https://pokeapi.
 - Paginated list with sprite cards
 - Debounced search across all 1351+ names (custom entries included)
 - Detail pages: types, abilities (hidden flagged), base stat bars
-- Add custom Pokémon via form (name, types, abilities, HP/attack/defense)
+- Add and delete custom Pokémon via forms (name, types, abilities, HP/attack/defense)
 
 **Berries Library** (`/berries`)
 - Paginated list with item sprites
 - Search across all berries + customs
 - Detail pages: firmness, size, growth, natural gift, flavor potency bars
-- Add custom berries via form
+- Add and delete custom berries via forms
 
-Custom entries are stored in local JSON files and merged into search results and detail pages — PokéAPI is read-only, so there's no real create endpoint. The store modules wrap the file access, so swapping in a database later only means changing those.
+Custom entries are stored in JSON files and merged into search results and detail pages. PokéAPI is read-only, so there's no real create endpoint: entries go to `/tmp` on Vercel (ephemeral — lost on redeploy and not shared across instances), while locally they live in `data/`. The store modules wrap the file access, so swapping in a database later only means changing those.
 
 ## Getting started
 
@@ -56,9 +56,9 @@ app/                  routes only — parse params, call features, render
   error.tsx           global error boundary
 features/pokemon/     pokemon slice: api.ts (cached fetches), store.ts (zod + JSON), components/
 features/berries/     berry slice — same layout, never imports from pokemon
-shared/               cross-cutting: hooks/ (debounce, search), ui/ (NavLinks, Sprite)
+shared/               cross-cutting: hooks/ (search state), ui/ (icons, buttons, nav)
 lib/                  pokeapi.ts (API types), utils.ts (pure helpers)
-data/                 custom-pokemon.json, custom-berries.json
+data/                 custom-pokemon.json, custom-berries.json (local dev)
 ```
 
 The two libraries are separate slices under `features/`. Each owns its data access, validation, storage, and components; `app/` routes stay thin. The rule: `features/pokemon` and `features/berries` never import from each other — shared code goes in `shared/` or `lib/`.
@@ -69,4 +69,4 @@ The two libraries are separate slices under `features/`. Each owns its data acce
 npm test
 ```
 
-Covers the zod schemas, the custom-data stores (fs mocked in-memory), the URL id parser, and the debounce hook.
+Covers the zod schemas, the custom-data stores (fs mocked in-memory), and the URL id parser.

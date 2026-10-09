@@ -5,7 +5,7 @@ import { BackButton } from "@/shared/ui/BackButton";
 export const instant = false;
 
 const INPUT_CLASS =
-  "rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-700 dark:bg-zinc-950";
+  "rounded-md border border-stone-300 bg-[#fffdf7] px-3 py-2 text-sm focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-200";
 
 export default async function NewPokemonPage({
   searchParams,
@@ -21,7 +21,7 @@ export default async function NewPokemonPage({
       <h1 className="mt-4 text-3xl font-bold tracking-tight">
         Add custom Pokémon
       </h1>
-      <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+      <p className="mt-2 text-stone-600">
         PokéAPI is read-only, so customs are stored locally and merged into
         search results.
       </p>
@@ -29,7 +29,7 @@ export default async function NewPokemonPage({
       {error && (
         <p
           role="alert"
-          className="mt-4 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+          className="mt-4 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800"
         >
           {error}
         </p>
@@ -37,7 +37,7 @@ export default async function NewPokemonPage({
 
       <form
         action={createCustomPokemon}
-        className="mt-6 flex flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
+        className="mt-6 flex flex-col gap-4 rounded-xl border border-stone-200 bg-[#fffdf7] p-6 shadow-sm"
       >
         <label className="flex flex-col gap-1">
           <span className="text-sm font-medium">Name</span>
@@ -112,7 +112,7 @@ export default async function NewPokemonPage({
 
         <button
           type="submit"
-          className="cursor-pointer mt-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
+          className="cursor-pointer mt-2 rounded-md bg-red-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-600"
         >
           Add Pokémon
         </button>

@@ -23,8 +23,8 @@ export function NavLinks() {
             aria-current={isActive ? "page" : undefined}
             className={
               isActive
-                ? "rounded-md bg-zinc-900 px-3 py-1.5 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                : "rounded-md px-3 py-1.5 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100"
+                ? "rounded-md bg-red-500 px-3 py-1.5 text-white"
+                : "rounded-md px-3 py-1.5 text-stone-600 hover:bg-stone-100 hover:text-stone-900"
             }
           >
             {label}

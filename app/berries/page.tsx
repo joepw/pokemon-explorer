@@ -8,6 +8,7 @@ import {
 } from "@/features/berries/api";
 import { BerrySearchBox } from "@/features/berries/components/BerrySearchBox";
 import { Sprite } from "@/shared/ui/Sprite";
+import { ButtonLink } from "@/shared/ui/ButtonLink";
 import type { ListItem } from "@/lib/pokeapi";
 import { idFromResourceUrl } from "@/lib/utils";
 
@@ -62,24 +63,23 @@ export default async function BerriesPage({
 
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-12">
-      <h1 className="text-3xl font-bold tracking-tight">Berries Library</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-3xl font-bold tracking-tight">Berries Library</h1>
+        <ButtonLink href="/berries/new">Add custom berry</ButtonLink>
+      </div>
 
-      <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-        Browse berries, or{" "}
-        <Link href="/berries/new" className="underline">
-          add your own custom berry
-        </Link>
-        .
+      <p className="mt-2 text-stone-600">
+        Browse berries, or add your own custom entries.
       </p>
 
       <Suspense fallback={null}>
         <BerrySearchBox />
       </Suspense>
 
-      <p className="mt-2 text-zinc-600 dark:text-zinc-400">{subtitle}</p>
+      <p className="mt-2 text-stone-600">{subtitle}</p>
 
       {items.length === 0 ? (
-        <div className="mt-6 rounded-lg border border-dashed px-6 py-12 text-center text-zinc-600 dark:border-zinc-700 dark:text-zinc-400">
+        <div className="mt-6 rounded-lg border border-dashed px-6 py-12 text-center text-stone-600">
           No berries match “{q}”.
         </div>
       ) : (
@@ -88,7 +88,7 @@ export default async function BerriesPage({
             const id = item.url ? idFromResourceUrl(item.url) : null;
             const isCustom = item.url === "";
             const tile = (
-              <div className="flex h-24 w-24 items-center justify-center rounded-lg bg-rose-100 text-3xl font-bold text-rose-700 dark:bg-rose-950 dark:text-rose-300">
+              <div className="flex h-24 w-24 items-center justify-center rounded-lg bg-rose-100 text-3xl font-bold text-rose-700">
                 {item.name.charAt(0).toUpperCase()}
               </div>
             );
@@ -97,7 +97,7 @@ export default async function BerriesPage({
               <li key={item.name}>
                 <Link
                   href={`/berries/${item.name}`}
-                  className="flex h-full flex-col items-center rounded-lg border border-zinc-200 p-4 text-center transition hover:border-zinc-400 hover:shadow-sm dark:border-zinc-800 dark:hover:border-zinc-600"
+                  className="flex h-full flex-col items-center rounded-lg border border-stone-200 p-4 text-center transition hover:border-blue-400 hover:shadow-sm"
                 >
                   {!isCustom ? (
                     <Sprite
@@ -113,13 +113,13 @@ export default async function BerriesPage({
                   <span className="mt-2 flex flex-wrap items-center justify-center gap-1 text-sm font-medium capitalize">
                     {item.name}
                     {isCustom && (
-                      <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-xs font-normal text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+                      <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-xs font-normal text-amber-800">
                         custom
                       </span>
                     )}
                   </span>
                   {id !== null && (
-                    <span className="text-xs text-zinc-500">#{id}</span>
+                    <span className="text-xs text-stone-500">#{id}</span>
                   )}
                 </Link>
               </li>
@@ -133,7 +133,7 @@ export default async function BerriesPage({
           {page > 1 ? (
             <Link
               href={buildPageHref(page - 1, q)}
-              className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-900"
+              className="rounded-md border border-stone-300 px-4 py-2 text-sm font-medium hover:bg-stone-100"
             >
               ← Previous
             </Link>
@@ -143,7 +143,7 @@ export default async function BerriesPage({
           {hasNext ? (
             <Link
               href={buildPageHref(page + 1, q)}
-              className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-900"
+              className="rounded-md border border-stone-300 px-4 py-2 text-sm font-medium hover:bg-stone-100"
             >
               Next →
             </Link>

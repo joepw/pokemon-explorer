@@ -17,7 +17,7 @@ export default function Error({
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-col items-center px-6 py-24 text-center">
       <h1 className="text-2xl font-bold">Something went wrong</h1>
-      <p className="mt-2 max-w-md text-zinc-600 dark:text-zinc-400">
+      <p className="mt-2 max-w-md text-stone-600">
         The data could not be loaded — PokéAPI may be temporarily
         unavailable. Try again in a moment.
       </p>
@@ -25,13 +25,13 @@ export default function Error({
         <button
           type="button"
           onClick={reset}
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
+          className="rounded-md bg-red-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-600"
         >
           Try again
         </button>
         <Link
           href="/"
-          className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-900"
+          className="rounded-md border border-stone-300 px-4 py-2 text-sm font-medium hover:bg-stone-100"
         >
           Go home
         </Link>

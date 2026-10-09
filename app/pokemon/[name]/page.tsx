@@ -20,7 +20,7 @@ type DetailView = {
 };
 
 const TYPE_COLORS: Record<string, string> = {
-  normal: "bg-zinc-400 text-white",
+  normal: "bg-stone-400 text-white",
   fire: "bg-orange-500 text-white",
   water: "bg-blue-500 text-white",
   electric: "bg-yellow-400 text-yellow-950",
@@ -35,7 +35,7 @@ const TYPE_COLORS: Record<string, string> = {
   rock: "bg-yellow-700 text-white",
   ghost: "bg-violet-600 text-white",
   dragon: "bg-indigo-600 text-white",
-  dark: "bg-zinc-700 text-white",
+  dark: "bg-stone-700 text-white",
   steel: "bg-slate-500 text-white",
   fairy: "bg-pink-300 text-pink-950",
 };
@@ -105,14 +105,14 @@ export default async function PokemonDetailPage({
 
       <div className="mt-4 flex flex-col gap-6 sm:flex-row sm:items-start">
         {view.image && (
-          <div className="self-start rounded-xl border border-zinc-200 bg-zinc-100 p-4 dark:border-zinc-800 dark:bg-zinc-900">
+          <div className="self-start rounded-xl border border-stone-200 bg-stone-100 p-4">
             <Sprite
               src={view.image}
               alt={view.name}
               width={160}
               height={160}
               fallback={
-                <div className="flex h-40 w-40 items-center justify-center text-4xl font-bold text-zinc-500">
+                <div className="flex h-40 w-40 items-center justify-center text-4xl font-bold text-stone-500">
                   {view.name.charAt(0).toUpperCase()}
                 </div>
               }
@@ -124,11 +124,11 @@ export default async function PokemonDetailPage({
           <h1 className="flex flex-wrap items-center gap-2 text-3xl font-bold capitalize">
             {view.name}
             {view.isCustom ? (
-              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-sm font-medium text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-sm font-medium text-amber-800">
                 custom
               </span>
             ) : (
-              <span className="text-lg font-normal text-zinc-500">
+              <span className="text-lg font-normal text-stone-500">
                 {view.titleSuffix}
               </span>
             )}
@@ -138,9 +138,7 @@ export default async function PokemonDetailPage({
             {view.types.map((type) => (
               <li
                 key={type}
-                className={`rounded-full px-3 py-1 text-xs font-medium capitalize ${
-                  TYPE_COLORS[type] ?? "bg-zinc-500 text-white"
-                }`}
+                className={`rounded-full px-3 py-1 text-xs font-medium capitalize ${ TYPE_COLORS[type] ?? "bg-stone-500 text-white" }`}
               >
                 {type}
               </li>
@@ -148,26 +146,11 @@ export default async function PokemonDetailPage({
           </ul>
 
           {view.meta && (
-            <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="mt-3 text-sm text-stone-600">
               {view.meta}
             </p>
           )}
         </div>
-      </div>
-
-      <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <form
-          action={deleteCustomPokemonAction}
-          className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-900/40 dark:bg-red-950/20"
-        >
-          <input type="hidden" name="name" value={view.name} />
-          <button
-            type="submit"
-            className="cursor-pointer rounded-md bg-red-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-500"
-          >
-            Delete custom Pokémon
-          </button>
-        </form>
       </div>
 
       <section className="mt-8">
@@ -175,10 +158,10 @@ export default async function PokemonDetailPage({
         <ul className="mt-3 space-y-2">
           {view.stats.map((stat) => (
             <li key={stat.name} className="flex items-center gap-3 text-sm">
-              <span className="w-24 shrink-0 capitalize text-zinc-600 dark:text-zinc-400">
+              <span className="w-24 shrink-0 capitalize text-stone-600">
                 {stat.name}
               </span>
-              <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
+              <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-stone-200">
                 <div
                   className={`h-full rounded-full ${statBarColor(stat.value)}`}
                   style={{
@@ -193,6 +176,21 @@ export default async function PokemonDetailPage({
           ))}
         </ul>
       </section>
+
+      {view.isCustom && <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <form
+          action={deleteCustomPokemonAction}
+          className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3"
+        >
+          <input type="hidden" name="name" value={view.name} />
+          <button
+            type="submit"
+            className="cursor-pointer rounded-md bg-red-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-600"
+          >
+            Delete custom Pokémon
+          </button>
+        </form>
+      </div>}
     </main>
   );
 }

@@ -93,7 +93,7 @@ export default async function BerryDetailPage({
   }
 
   const tile = (
-    <div className="flex h-24 w-24 items-center justify-center rounded-lg bg-rose-100 text-3xl font-bold text-rose-700 dark:bg-rose-950 dark:text-rose-300">
+    <div className="flex h-24 w-24 items-center justify-center rounded-lg bg-rose-100 text-3xl font-bold text-rose-700">
       {view.name.charAt(0).toUpperCase()}
     </div>
   );
@@ -118,11 +118,11 @@ export default async function BerryDetailPage({
         <h1 className="flex flex-wrap items-center gap-2 text-3xl font-bold capitalize">
           {view.name}
           {view.isCustom ? (
-            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-sm font-medium text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-sm font-medium text-amber-800">
               custom
             </span>
           ) : (
-            <span className="text-lg font-normal text-zinc-500">
+            <span className="text-lg font-normal text-stone-500">
               {view.titleSuffix}
             </span>
           )}
@@ -133,9 +133,9 @@ export default async function BerryDetailPage({
         {view.facts.map((fact) => (
           <div
             key={fact.label}
-            className="rounded-lg border border-zinc-200 p-3 dark:border-zinc-800"
+            className="rounded-lg border border-stone-200 p-3"
           >
-            <dt className="text-xs uppercase tracking-wide text-zinc-500">
+            <dt className="text-xs uppercase tracking-wide text-stone-500">
               {fact.label}
             </dt>
             <dd className="mt-1 text-sm font-medium capitalize">
@@ -151,14 +151,12 @@ export default async function BerryDetailPage({
           <ul className="mt-3 space-y-2">
             {view.flavors.map((flavor) => (
               <li key={flavor.name} className="flex items-center gap-3 text-sm">
-                <span className="w-20 shrink-0 capitalize text-zinc-600 dark:text-zinc-400">
+                <span className="w-20 shrink-0 capitalize text-stone-600">
                   {flavor.name}
                 </span>
-                <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
+                <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-stone-200">
                   <div
-                    className={`h-full rounded-full ${
-                      FLAVOR_COLORS[flavor.name] ?? "bg-zinc-500"
-                    }`}
+                    className={`h-full rounded-full ${FLAVOR_COLORS[flavor.name] ?? "bg-stone-500" }`}
                     style={{
                       width: `${Math.min(100, (flavor.potency / 25) * 100)}%`,
                     }}
@@ -173,20 +171,21 @@ export default async function BerryDetailPage({
         </section>
       )}
 
-      <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+      {view.isCustom && <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
         <form
           action={deleteCustomBerryAction}
-          className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-900/40 dark:bg-red-950/20"
+          className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3"
         >
           <input type="hidden" name="name" value={view.name} />
           <button
             type="submit"
-            className="cursor-pointer rounded-md bg-red-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-500"
+            className="cursor-pointer rounded-md bg-red-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-600"
           >
             Delete custom berry
           </button>
         </form>
-      </div>
+      </div>}
+
     </main>
   );
 }

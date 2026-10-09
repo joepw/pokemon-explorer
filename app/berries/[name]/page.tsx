@@ -133,7 +133,7 @@ export default async function BerryDetailPage({
         {view.facts.map((fact) => (
           <div
             key={fact.label}
-            className="rounded-lg border border-stone-200 p-3"
+            className="rounded-lg border border-stone-200 bg-[#fffdf7] p-3"
           >
             <dt className="text-xs uppercase tracking-wide text-stone-500">
               {fact.label}

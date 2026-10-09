@@ -98,7 +98,7 @@ export default async function PokemonPage({
               <li key={item.name}>
                 <Link
                   href={`/pokemon/${item.name}`}
-                  className="flex h-full flex-col items-center rounded-lg border border-stone-200 p-4 text-center transition hover:border-blue-400 hover:shadow-sm"
+                  className="flex h-full flex-col items-center rounded-lg border border-stone-200 bg-[#fffdf7] p-4 text-center transition hover:border-blue-400 hover:shadow-sm"
                 >
                   {id !== null ? (
                     <Sprite

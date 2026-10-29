@@ -5,13 +5,11 @@ import { readCustomPokemon } from "@/features/pokemon/store";
 import {
   getAllPokemonNames,
   getPokemonPage,
-  getPokemonSpriteUrl,
 } from "@/features/pokemon/api";
 import { PokemonSearchBox } from "@/features/pokemon/components/PokemonSearchBox";
-import { Sprite } from "@/shared/ui/Sprite";
 import { ButtonLink } from "@/shared/ui/ButtonLink";
 import type { ListItem } from "@/lib/pokeapi";
-import { idFromResourceUrl } from "@/lib/utils";
+import PokemonCard from "./pokemonCard";
 
 // dynamic: reads searchParams
 export const instant = false;
@@ -85,47 +83,11 @@ export default async function PokemonPage({
         </div>
       ) : (
         <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {items.map((item) => {
-            const id = item.url ? idFromResourceUrl(item.url) : null;
-            const isCustom = item.url === "";
-            const tile = (
-              <div className="flex h-24 w-24 items-center justify-center rounded-lg bg-stone-100 text-3xl font-bold text-stone-500">
-                {item.name.charAt(0).toUpperCase()}
-              </div>
-            );
-
-            return (
-              <li key={item.name}>
-                <Link
-                  href={`/pokemon/${item.name}`}
-                  className="flex h-full flex-col items-center rounded-lg border border-stone-200 bg-[#fffdf7] p-4 text-center transition hover:border-blue-400 hover:shadow-sm"
-                >
-                  {id !== null ? (
-                    <Sprite
-                      src={getPokemonSpriteUrl(id)}
-                      alt={item.name}
-                      width={96}
-                      height={96}
-                      fallback={tile}
-                    />
-                  ) : (
-                    tile
-                  )}
-                  <span className="mt-2 flex flex-wrap items-center justify-center gap-1 text-sm font-medium capitalize">
-                    {item.name}
-                    {isCustom && (
-                      <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-xs font-normal text-amber-800">
-                        custom
-                      </span>
-                    )}
-                  </span>
-                  {id !== null && (
-                    <span className="text-xs text-stone-500">#{id}</span>
-                  )}
-                </Link>
-              </li>
-            );
-          })}
+          {items.map((item) => (
+            <li key={item.name}>
+              <PokemonCard item={item} enableCatch href={`/pokemon/${item.name}`} />
+            </li>
+          ))}
         </ul>
       )}
 

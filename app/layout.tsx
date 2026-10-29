@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Geist, Geist_Mono, Fredoka } from "next/font/google";
+import { cookies } from "next/headers";
 
 import { NavLinks } from "@/shared/ui/NavLinks";
 import { PokeBallIcon } from "@/shared/ui/PokeBallIcon";
 
 import "./globals.css";
+import { logout } from "@/features/auth/actions";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,6 +24,8 @@ const fredoka = Fredoka({
   subsets: ["latin"],
 });
 
+export const instant = false;
+
 export const metadata: Metadata = {
   title: {
     default: "Pokémon Explorer",
@@ -31,7 +35,10 @@ export const metadata: Metadata = {
     "Browse Pokémon and berries, view their details, and add your own customs.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+
   return (
     <html
       lang="en"
@@ -51,6 +58,23 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               </span>
             </Link>
             <NavLinks />
+            {token ? (
+              <form action={logout}>
+                <button
+                  type="submit"
+                  className="text-sm font-medium text-stone-700 hover:text-stone-900"
+                >
+                  Logout
+                </button>
+              </form>
+            ) : (
+              <Link
+                href="/login"
+                className="text-sm font-medium text-stone-700 hover:text-stone-900"
+              >
+                Login
+              </Link>
+            )}
           </div>
         </header>
 

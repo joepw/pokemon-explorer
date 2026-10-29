@@ -1,24 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
+import { useCollection } from "@/features/collection/CollectionProvider";
 import PokemonCard from "../pokemon/pokemonCard";
-import { ListItem } from "@/lib/pokeapi";
-import { getCollection } from "@/features/collection/storage";
 
 export default function CollectionPage() {
-  const [items, setItems] = useState<ListItem[]>([]);
-
-  useEffect(() => {
-    const load = () => setItems(getCollection());
-    load();
-    window.addEventListener("collection:changed", load);
-    window.addEventListener("storage", load);
-    return () => {
-      window.removeEventListener("collection:changed", load);
-      window.removeEventListener("storage", load);
-    };
-  }, []);
+  const { items } = useCollection();
 
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-12">

@@ -8,6 +8,7 @@ import { PokeBallIcon } from "@/shared/ui/PokeBallIcon";
 
 import "./globals.css";
 import { logout } from "@/features/auth/actions";
+import { CollectionProvider } from "@/features/collection/CollectionProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -78,7 +79,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           </div>
         </header>
 
-        {children}
+        <CollectionProvider>{children}</CollectionProvider>
 
         <footer className="mt-auto border-t border-stone-200">
           <div className="mx-auto flex w-full max-w-5xl flex-wrap gap-1 px-6 py-4 text-sm text-stone-500">

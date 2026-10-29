@@ -3,11 +3,11 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export async function login(prevState: { error: string } | null, formData: FormData) {
+export async function login(formData: FormData) {
   const username = String(formData.get("username") ?? "").trim();
 
   if (!username) {
-    return { error: "Username is required" };
+    return
   }
   const token = crypto.randomUUID();
 

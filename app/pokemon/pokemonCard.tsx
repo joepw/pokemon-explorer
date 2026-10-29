@@ -5,7 +5,7 @@ import { idFromResourceUrl } from "@/lib/utils";
 import { Sprite } from "@/shared/ui/Sprite";
 import React from "react";
 import Link from "next/link";
-import { addToCollection, removeFromCollection } from "@/features/collection/storage";
+import { useCollection } from "@/features/collection/CollectionProvider";
 
 const PokemonCard = ({
   item,
@@ -18,6 +18,8 @@ const PokemonCard = ({
   href?: string;
   enableRelease?: boolean;
 }) => {
+  const { add, remove } = useCollection();
+
   const id = item.url ? idFromResourceUrl(item.url) : null;
   const tile = (
     <div className="flex h-24 w-24 items-center justify-center rounded-lg bg-stone-100 text-3xl font-bold text-stone-500">
@@ -29,7 +31,7 @@ const PokemonCard = ({
   const catchPokemon = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addToCollection(item);
+    add(item);
   };
 
   const content = (
@@ -68,7 +70,7 @@ const PokemonCard = ({
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            removeFromCollection(item.name);
+            remove(item.name);
           }}
         >
           Release
